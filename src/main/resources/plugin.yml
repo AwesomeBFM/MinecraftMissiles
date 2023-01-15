@@ -1,0 +1,11 @@
+name: MinecraftMissiles
+version: '${project.version}'
+main: dev.awesomebfm.minecraftmissiles.MinecraftMissiles
+api-version: 1.19
+authors: [ AwesomeBFM ]
+description: Launch missles at nearby players
+commands:
+  debug:
+    description: debug smth
+  distance:
+    description: get distance between two players
