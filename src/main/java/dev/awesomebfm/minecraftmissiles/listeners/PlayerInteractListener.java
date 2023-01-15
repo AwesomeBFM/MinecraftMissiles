@@ -1,9 +1,11 @@
 package dev.awesomebfm.minecraftmissiles.listeners;
 
+import dev.awesomebfm.minecraftmissiles.MinecraftMissiles;
 import dev.dbassett.skullcreator.SkullCreator;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
@@ -14,12 +16,14 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class PlayerInteractListener implements Listener {
+    private final MinecraftMissiles instance = MinecraftMissiles.getInstance();
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent e) {
@@ -73,10 +77,16 @@ public class PlayerInteractListener implements Listener {
         //region targets
         List<Player> nearestPlayers = getNearestPlayers(e.getPlayer());
 
+        if (nearestPlayers.isEmpty()) {
+            e.getPlayer().sendMessage(ChatColor.RED + "HIFI Targeting System found zero targets.");
+            return;
+        }
+
         ItemStack firstHead = SkullCreator.itemFromUuid(nearestPlayers.get(0).getUniqueId());
         ItemMeta firstHeadMeta = firstHead.getItemMeta();
         firstHeadMeta.setDisplayName(ChatColor.GREEN + nearestPlayers.get(0).getName());
         firstHeadMeta.setLore(List.of(ChatColor.YELLOW + "Click to set as target."));
+        firstHeadMeta.getPersistentDataContainer().set(new NamespacedKey(instance, "uuid"), PersistentDataType.STRING, nearestPlayers.get(0).getUniqueId().toString());
         firstHead.setItemMeta(firstHeadMeta);
         inventory.setItem(14, firstHead);
 
@@ -84,6 +94,7 @@ public class PlayerInteractListener implements Listener {
         ItemMeta secondHeadMeta = secondHead.getItemMeta();
         secondHeadMeta.setDisplayName(ChatColor.GREEN + nearestPlayers.get(1).getName());
         secondHeadMeta.setLore(List.of(ChatColor.YELLOW + "Click to set as target."));
+        secondHeadMeta.getPersistentDataContainer().set(new NamespacedKey(instance, "uuid"), PersistentDataType.STRING, nearestPlayers.get(1).getUniqueId().toString());
         secondHead.setItemMeta(secondHeadMeta);
         inventory.setItem(15, secondHead);
 
@@ -91,6 +102,7 @@ public class PlayerInteractListener implements Listener {
         ItemMeta thirdHeadMeta = thirdHead.getItemMeta();
         thirdHeadMeta.setDisplayName(ChatColor.GREEN + nearestPlayers.get(2).getName());
         thirdHeadMeta.setLore(List.of(ChatColor.YELLOW + "Click to set as target."));
+        thirdHeadMeta.getPersistentDataContainer().set(new NamespacedKey(instance, "uuid"), PersistentDataType.STRING, nearestPlayers.get(2).getUniqueId().toString());
         thirdHead.setItemMeta(thirdHeadMeta);
         inventory.setItem(16, thirdHead);
         //endregion
