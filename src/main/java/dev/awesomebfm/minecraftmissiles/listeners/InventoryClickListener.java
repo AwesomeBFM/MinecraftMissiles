@@ -38,7 +38,7 @@ public class InventoryClickListener implements Listener {
 
             ItemStack launch = e.getClickedInventory().getItem(10);
             ItemMeta launchMeta = launch.getItemMeta();
-            PersistentDataContainer launchData = launch.getItemMeta().getPersistentDataContainer();
+            PersistentDataContainer launchData = launchMeta.getPersistentDataContainer();
 
             ItemStack item = e.getClickedInventory().getItem(14);
             if (item == null) return;
@@ -63,6 +63,7 @@ public class InventoryClickListener implements Listener {
             }
             launch.setItemMeta(launchMeta);
             item.setItemMeta(meta);
+            e.getInventory().setItem(10, launch);
             e.getInventory().setItem(14, item);
 
             Player p = (Player) e.getWhoClicked();
@@ -100,6 +101,7 @@ public class InventoryClickListener implements Listener {
             }
             launch.setItemMeta(launchMeta);
             item.setItemMeta(meta);
+            e.getInventory().setItem(10, launch);
             e.getInventory().setItem(15, item);
 
             Player p = (Player) e.getWhoClicked();
@@ -133,10 +135,12 @@ public class InventoryClickListener implements Listener {
                 three.setItemMeta(cMeta);
 
                 String uuid = meta.getPersistentDataContainer().get(new NamespacedKey(instance, "uuid"), PersistentDataType.STRING);
+                System.out.println(uuid);
                 launchData.set(new NamespacedKey(instance, "target"), PersistentDataType.STRING, uuid);
             }
             launch.setItemMeta(launchMeta);
             item.setItemMeta(meta);
+            e.getInventory().setItem(10, launch);
             e.getInventory().setItem(16, item);
 
             Player p = (Player) e.getWhoClicked();
@@ -166,6 +170,7 @@ public class InventoryClickListener implements Listener {
             Player target = Bukkit.getPlayer(UUID.fromString(uuid));
             Location targetLoc = target.getLocation();
             targetLoc.getWorld().spawn(targetLoc, TNTPrimed.class);
+            ((Player) e.getWhoClicked()).closeInventory();
         }
 
     }
