@@ -2,12 +2,7 @@ package dev.awesomebfm.minecraftmissiles.listeners;
 
 import dev.awesomebfm.minecraftmissiles.MinecraftMissiles;
 import dev.dbassett.skullcreator.SkullCreator;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.block.Block;
-import org.bukkit.block.data.BlockData;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,8 +14,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PlayerInteractListener implements Listener {
     private final MinecraftMissiles instance = MinecraftMissiles.getInstance();
@@ -69,15 +66,15 @@ public class PlayerInteractListener implements Listener {
         //region launch item
         ItemStack launch = new ItemStack(Material.LIME_STAINED_GLASS_PANE);
         ItemMeta launchMeta = launch.getItemMeta();
-        launchMeta.setDisplayName(ChatColor.GREEN+ "Launch Missile");
+        launchMeta.setDisplayName(ChatColor.GREEN + "Launch Missile");
         launchMeta.setLore(List.of(ChatColor.YELLOW + "Click to launch."));
         launch.setItemMeta(launchMeta);
         inventory.setItem(10, launch);
         //endregion
         //region targets
-        List<Player> nearestPlayers = getNearestPlayers(e.getPlayer());
+        List<Player> nearestPlayers = getClosestPlayers(e.getPlayer());
 
-        if (nearestPlayers.isEmpty()) {
+        if (nearestPlayers == null) {
             e.getPlayer().sendMessage(ChatColor.RED + "HIFI Targeting System found zero targets.");
             return;
         }
@@ -107,7 +104,6 @@ public class PlayerInteractListener implements Listener {
         inventory.setItem(16, thirdHead);
         //endregion
         e.getPlayer().openInventory(inventory);
-
     }
 
     private List<Player> getNearestPlayers(Player player) {
@@ -155,6 +151,15 @@ public class PlayerInteractListener implements Listener {
         closestPlayers.add(tempPlayer);
 
         return closestPlayers;
+    }
+
+    public static List<Player> getClosestPlayers(Player player) {
+        Location playerLocation = player.getLocation();
+        return player.getWorld().getPlayers().stream()
+                .filter(p -> !p.equals(player))
+                .sorted(Comparator.comparingDouble(loc -> loc.getLocation().distanceSquared(playerLocation)))
+                .limit(3)
+                .collect(Collectors.toList());
     }
 
 }

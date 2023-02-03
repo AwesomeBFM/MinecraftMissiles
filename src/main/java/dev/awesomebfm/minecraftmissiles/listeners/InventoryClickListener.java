@@ -7,7 +7,6 @@ import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -33,6 +32,7 @@ public class InventoryClickListener implements Listener {
             return;
         }
 
+        //region selectors
         if (e.getSlot() == 14) {
             e.setCancelled(true);
 
@@ -147,6 +147,7 @@ public class InventoryClickListener implements Listener {
             p.playSound(p.getLocation(), Sound.BLOCK_STONE_BUTTON_CLICK_ON, 10, 1);
             return;
         }
+        //endregion
 
         if (e.getSlot() == 10) {
             e.setCancelled(true);
